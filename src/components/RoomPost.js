@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
-import { FaPen, FaEye, FaTrash } from 'react-icons/fa'
+import { FaEye, FaTrash } from 'react-icons/fa'
 
 function RoomPost(props) {
+
+  const deleteButton = () => {
+    if(props.loggedInUser.token !== '' && props.loggedInUser.user._id === props.post.userId) {
+      return (
+        <>| <FaTrash onClick={() => props.deleteRoom(props.post._id)} 
+                className="delete-room-button text-danger" />
+        </>
+      )
+    }
+  }
 
   return (
     <div className="col-4">
@@ -16,11 +26,10 @@ function RoomPost(props) {
           <Link to={`/rooms/${props.post._id}`}>{props.post.name}</Link>
         </div>
         <div className="room-actions">
+          <p>{props.post.userId}</p>
           <Link to={`/rooms/${props.post._id}`}>
             <FaEye className="text-info" />
-          </Link> | <Link to={`/rooms/${props.post._id}/edit`}>
-            <FaPen className="text-info" />
-          </Link> | <FaTrash onClick={() => props.deleteRoom(props.post._id)} className="delete-room-button text-danger" />
+          </Link> { deleteButton() }
         </div>
         <p>{props.post.description}</p>
       </div>

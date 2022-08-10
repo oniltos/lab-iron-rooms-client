@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom' 
 import apiService from '../../services/api.service'
 import TextAreaInput from '../../components/TextAreaInput'
+import { AuthContext } from '../../contexts/authContext'
 
 const RoomDetail = () => {
     const [room, setRoom] = useState(null)
@@ -9,6 +10,8 @@ const RoomDetail = () => {
     const [showReviewForm, setShowReviewForm] = useState(false)
     const [reviewComment, setReviewComment] = useState('')
     const [refresh, setRefresh] = useState(false)
+
+    const { isLoading, loggedInUser } = useContext(AuthContext)
 
     const { id } = useParams()
 
@@ -63,19 +66,23 @@ const RoomDetail = () => {
                          : <p>This room has no reviews</p>
                          }
                     </div>
-                    <button onClick={() => setShowReviewForm(true)} className="btn btn-primary">Review!</button>
-                    { showReviewForm && (
-                        <div className="review-form">
-                            <form onSubmit={handleReviewSubmit}>
-                                <TextAreaInput 
-                                    name="comment"
-                                    value={reviewComment}
-                                    onChange={e => setReviewComment(e.target.value)}
-                                    placeholder="Your comment"
-                                    />
-                                <button className='btn btn-success'>Send review</button>
-                            </form>
-                        </div>
+                    { (!isLoading && loggedInUser.token !== '') && (
+                        <>
+                            <button onClick={() => setShowReviewForm(true)} className="btn btn-primary">Review!</button>
+                            { showReviewForm && (
+                                <div className="review-form">
+                                    <form onSubmit={handleReviewSubmit}>
+                                        <TextAreaInput 
+                                            name="comment"
+                                            value={reviewComment}
+                                            onChange={e => setReviewComment(e.target.value)}
+                                            placeholder="Your comment"
+                                            />
+                                        <button className='btn btn-success'>Send review</button>
+                                    </form>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
